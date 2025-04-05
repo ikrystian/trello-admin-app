@@ -28,13 +28,13 @@ export function middleware(request: NextRequest) {
   // Check for auth session cookie
   const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
 
-  // If no session cookie, redirect to sign-in
-  if (!sessionCookie) {
+  // If no session cookie or invalid session, redirect to sign-in
+  if (!sessionCookie || !isValidSession(sessionCookie.value)) {
     const signInUrl = new URL('/sign-in', request.url);
     return NextResponse.redirect(signInUrl);
   }
 
-  // Allow authenticated requests
+  // Allow authenticated requests with valid session
   return NextResponse.next();
 }
 

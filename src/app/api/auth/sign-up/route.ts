@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email, name, password } = body as SignUpCredentials;
-    
+
     // Validate required fields
     if (!email || !name || !password) {
       return NextResponse.json(
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     // Validate password strength
     if (password.length < 6) {
       return NextResponse.json(
@@ -31,10 +31,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     // Create user
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const user = createUser({ email, name, password });
-    
+
     // Return success response
     return NextResponse.json({ message: 'User created successfully' });
   } catch (error) {

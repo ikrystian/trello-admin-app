@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { SESSION_COOKIE_NAME } from '@/lib/auth-utils';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // Clear session cookie
     const response = NextResponse.json({ message: 'Signed out successfully' });

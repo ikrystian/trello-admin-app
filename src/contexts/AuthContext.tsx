@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { User, AuthState, AuthContextType, SignInCredentials, SignUpCredentials } from '@/types/auth';
+import { AuthState, AuthContextType, SignInCredentials, SignUpCredentials } from '@/types/auth';
 
 // Create the auth context with default values
 const AuthContext = createContext<AuthContextType>({
@@ -25,7 +25,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isLoading: true,
     error: null,
   });
-  
+
   const router = useRouter();
 
   // Check if user is authenticated on mount
@@ -55,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             error: null,
           });
         }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         setState({
           user: null,
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sign in function
   const signIn = async (credentials: SignInCredentials) => {
     setState({ ...state, isLoading: true, error: null });
-    
+
     try {
       const response = await fetch('/api/auth/sign-in', {
         method: 'POST',
@@ -79,19 +80,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify(credentials),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Failed to sign in');
       }
-      
+
       setState({
         user: data.user,
         isLoading: false,
         error: null,
       });
-      
+
       toast.success('Zalogowano pomyślnie!');
       router.push('/dashboard');
     } catch (error) {
@@ -107,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sign up function
   const signUp = async (credentials: SignUpCredentials) => {
     setState({ ...state, isLoading: true, error: null });
-    
+
     try {
       const response = await fetch('/api/auth/sign-up', {
         method: 'POST',
@@ -116,13 +117,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
         body: JSON.stringify(credentials),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.message || 'Failed to sign up');
       }
-      
+
       toast.success('Konto utworzone pomyślnie!');
       router.push('/sign-in');
     } catch (error) {
@@ -138,18 +139,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Sign out function
   const signOut = async () => {
     setState({ ...state, isLoading: true, error: null });
-    
+
     try {
       await fetch('/api/auth/sign-out', {
         method: 'POST',
       });
-      
+
       setState({
         user: null,
         isLoading: false,
         error: null,
       });
-      
+
       toast.success('Wylogowano pomyślnie!');
       router.push('/?logged_out=true');
     } catch (error) {

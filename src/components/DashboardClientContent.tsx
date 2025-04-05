@@ -245,8 +245,8 @@ export default function DashboardClientContent({ dictionary }: DashboardClientCo
                                     setIsLoadingBoards(false);
                                     setErrorBoards(null);
                                   });
-                              } catch (error) {
-                                console.error('Error retrying board fetch:', error);
+                              } catch (err) {
+                                console.error('Error retrying board fetch:', err);
                               }
                             };
                             setIsLoadingBoards(true);

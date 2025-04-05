@@ -83,6 +83,7 @@ export async function GET(
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const authUserId = user.id;
 
   const { boardId } = await context.params; // Access boardId from context

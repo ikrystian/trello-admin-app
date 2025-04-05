@@ -18,9 +18,9 @@ export async function POST(request: NextRequest) {
     // Validate credentials
     const user = validateCredentials({ email, password });
 
-    // Store session in a real app, you would use a database
-    // For this simple example, we'll just return the user without the password
-    const { password: _, ...userWithoutPassword } = user;
+    // Intentionally exclude password from user data before sending the response
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _userPassword, ...userWithoutPassword } = user;
 
     // Use the user ID as the session token
     const sessionToken = user.id;
