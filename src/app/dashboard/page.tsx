@@ -1,15 +1,14 @@
 import { getDictionary } from '@/lib/dictionaries';
-import DashboardClientContent from '@/components/DashboardClientContent'; // Import the new client component
+import DashboardClientContent from '@/components/DashboardClientContent';
 
-// Remove params type definition
-
-// This is now a Server Component
-export default async function DashboardPage() { // Remove params
-  // Fetch the default (Polish) dictionary on the server
+// This is a Server Component
+export default async function DashboardPage() {
+  // Fetch the dictionary on the server
   const dictionary = await getDictionary();
 
-  // Render the client component and pass only the dictionary as props
+  // Render the client component and pass the dictionary as props
+  // The client component will handle authentication
   return (
-    <DashboardClientContent dictionary={dictionary} /> // Remove lang prop
+    <DashboardClientContent dictionary={dictionary} />
   );
 }

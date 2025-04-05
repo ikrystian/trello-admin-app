@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation'; // Import useRouter
+import { useSearchParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 // Import the component AND the dictionary type it expects
 import LandingPageContent, { type LandingPageContentDictionary } from './LandingPageContent';
 
@@ -19,7 +20,8 @@ interface LandingPageProps {
 
 export default function LandingPage({ dictionary }: LandingPageProps) {
   const searchParams = useSearchParams();
-  const router = useRouter(); // Get router instance
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
     // Check if user has been logged out
@@ -39,6 +41,13 @@ export default function LandingPage({ dictionary }: LandingPageProps) {
       router.replace('/', { scroll: false });
     }
   }, [searchParams, dictionary, router]); // Add router to dependency array
+
+  // Redirect to dashboard if user is logged in
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push('/dashboard');
+    }
+  }, [isLoading, user, router]);
 
   // Pass only the dictionary down to the content component
   return <LandingPageContent dictionary={dictionary} />; // Remove lang prop

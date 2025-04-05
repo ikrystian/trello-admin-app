@@ -1,8 +1,8 @@
 'use client';
 
 import { Clock } from 'lucide-react';
-import { ThemeSwitcher } from './ThemeSwitcher'; // Use relative path
-// import { LanguageSwitcher } from './LanguageSwitcher'; // Removed import as file is missing
+import { ThemeSwitcher } from './ThemeSwitcher';
+import { UserMenu } from './UserMenu';
 
 // Define the expected dictionary structure for this component
 interface DashboardHeaderDictionary {
@@ -27,8 +27,8 @@ export default function DashboardHeader({ dictionary }: DashboardHeaderProps) {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* <LanguageSwitcher /> */} {/* Removed usage */}
           <ThemeSwitcher />
+          <UserMenu />
         </div>
       </div>
     </header>

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { validateCredentials, generateSessionToken, SESSION_COOKIE_NAME } from '@/lib/auth-utils';
+import { validateCredentials, SESSION_COOKIE_NAME } from '@/lib/auth-utils';
 import { SignInCredentials } from '@/types/auth';
 
 export async function POST(request: NextRequest) {
@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
     // For this simple example, we'll just return the user without the password
     const { password: _, ...userWithoutPassword } = user;
 
-    // Generate session token
-    const sessionToken = generateSessionToken();
+    // Use the user ID as the session token
+    const sessionToken = user.id;
 
     // Set session cookie
     const response = NextResponse.json({ user: userWithoutPassword });

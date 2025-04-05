@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'; // Removed useCallback
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { useAuth } from "@/contexts/AuthContext";
 import AdminPanel from '@/components/AdminPanel';
 import DashboardHeader from '@/components/DashboardHeader';
@@ -42,7 +43,9 @@ interface DashboardClientContentProps {
 }
 
 export default function DashboardClientContent({ dictionary }: DashboardClientContentProps) { // Remove lang from props
-  const { isLoaded, userId } = useAuth();
+  const { isLoading, user } = useAuth();
+  const router = useRouter();
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
   const firstDayOfMonth = getFirstDayOfMonth();
   const lastDayOfMonth = getLastDayOfMonth();
@@ -59,14 +62,27 @@ export default function DashboardClientContent({ dictionary }: DashboardClientCo
   const [errorBoards, setErrorBoards] = useState<string | null>(null);
   // Removed Trello connection state variables
 
+  // Check authentication status and set redirect flag
+  useEffect(() => {
+    if (!isLoading && !user) {
+      setShouldRedirect(true);
+    }
+  }, [isLoading, user]);
+
+  // Handle redirect in a separate useEffect
+  useEffect(() => {
+    if (shouldRedirect) {
+      router.push('/sign-in');
+    }
+  }, [shouldRedirect, router]);
+
   // Function to fetch boards (Reverted to original structure)
   // Reverted useEffect structure
   useEffect(() => {
-    if (!isLoaded) return;
+    if (isLoading) return;
 
-    if (!userId) {
-      // Update redirect URL to remove lang prefix
-      window.location.href = `/sign-in`;
+    if (!user) {
+      // We'll let the UI handle this with a loading state
       return;
     }
 
@@ -89,8 +105,7 @@ export default function DashboardClientContent({ dictionary }: DashboardClientCo
         let message = dictionary.dashboard?.errorLoadingBoards || 'Failed to load boards.';
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-              // Update redirect URL to remove lang prefix
-              window.location.href = `/sign-in`;
+              setShouldRedirect(true);
               return;
             }
             message = error.response?.data?.message || message;
@@ -104,7 +119,7 @@ export default function DashboardClientContent({ dictionary }: DashboardClientCo
     };
 
     fetchBoards();
-  }, [isLoaded, userId, dictionary]); // Reverted dependencies
+  }, [isLoading, user, dictionary]); // Updated dependencies
 
   // Effect to load board selection from localStorage
   useEffect(() => {
@@ -154,13 +169,12 @@ export default function DashboardClientContent({ dictionary }: DashboardClientCo
   };
 
   // Use direct keys from dictionary.common or dictionary.dashboard
-  if (!isLoaded) {
+  if (isLoading) {
      // Assuming a loading message exists in common or dashboard
      return <p className="text-center text-muted-foreground pt-24">{dictionary.common?.loading || 'Loading session...'}</p>;
   }
 
-  if (!userId) {
-    // Use a known key or default string
+  if (!user) {
     return <p className="text-center text-muted-foreground pt-24">{dictionary.common?.loading || 'Redirecting to sign-in...'}</p>; // Using common.loading as placeholder
   }
 

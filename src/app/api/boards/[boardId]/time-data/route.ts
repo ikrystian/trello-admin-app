@@ -83,8 +83,7 @@ export async function GET(
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  const userId = user.id;
-
+  const authUserId = user.id;
 
   const { boardId } = await context.params; // Access boardId from context
   const { searchParams } = request.nextUrl;
@@ -92,7 +91,7 @@ export async function GET(
   // Extract query parameters
   const startDate = searchParams.get('startDate');
   const endDate = searchParams.get('endDate');
-  const userId = searchParams.get('userId');
+  const filterUserId = searchParams.get('userId');
   const labelId = searchParams.get('labelId');
 
   // Ensure credentials and Power-Up ID are present (Reverted check)
@@ -194,7 +193,7 @@ export async function GET(
                   }
 
                   // User ID Filtering
-                  if (userId && entry.memberId !== userId) {
+                  if (filterUserId && entry.memberId !== filterUserId) {
                     return false;
                   }
                   return true;
