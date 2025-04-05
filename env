@@ -2,13 +2,5 @@ TRELLO_API_KEY=
 TRELLO_API_TOKEN=
 TRELLO_POWERUP_ID=
 
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-
-# Clerk middleware configuration variables
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in # Match the new catch-all route
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up # Keep separate sign-up route for Clerk component
-
-# Clerk redirect URLs after sign-in/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/sign-in
+# Auth configuration
+AUTH_SECRET_KEY=your_secret_key_here

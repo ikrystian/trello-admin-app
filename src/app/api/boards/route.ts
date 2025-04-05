@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server'; // Reverted import
+import { NextRequest, NextResponse } from 'next/server';
+
+import { findUserById, SESSION_COOKIE_NAME } from '@/lib/auth-utils';
 
 // Basic Trello API authentication parameters from environment variables
 const trelloAuth = { // Reverted name
@@ -17,28 +18,27 @@ if (!trelloAuth.key || !trelloAuth.token) { // Reverted check
   // For now, we'll let requests fail if keys are missing.
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   let userId: string | null = null;
-  // let userTrelloToken: string | null = null; // Removed user token variable
 
-  try {
-    const authResult = await auth(); // Get user ID from Clerk
-    userId = authResult.userId;
-    console.log('API Route: /api/boards - Clerk User ID:', userId); // Log Clerk User ID
+  // Get session cookie
+  const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
 
-    if (!userId) {
-      console.error('API Route: /api/boards - Unauthorized access attempt.');
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Removed Clerk metadata fetching logic
-
-  } catch (clerkError) {
-    // console.error('API Route: /api/boards - Error during Clerk auth() or fetching metadata:', clerkError); // Original error message
-    console.error('API Route: /api/boards - Error during Clerk auth():', clerkError); // Reverted error message
-    // return NextResponse.json({ message: 'Authentication or user data error.' }, { status: 500 }); // Original error response
-    return NextResponse.json({ message: 'Authentication error.' }, { status: 500 }); // Reverted error response
+  if (!sessionCookie?.value) {
+    console.error('API Route: /api/boards - Unauthorized access attempt.');
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
+
+  // Get user from session
+  const user = findUserById(sessionCookie.value);
+
+  if (!user) {
+    console.error('API Route: /api/boards - Invalid session.');
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
+  userId = user.id;
+  console.log('API Route: /api/boards - User ID:', userId);
 
 
   // Ensure keys are present before making the request (Reverted check)

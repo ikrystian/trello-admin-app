@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server'; // Reverted import
+
+import { findUserById, SESSION_COOKIE_NAME } from '@/lib/auth-utils';
 
 // Trello API configuration from environment variables
 const trelloAuth = { // Reverted name
@@ -68,15 +69,21 @@ export async function GET(
   request: NextRequest,
   context: { params: Promise<{ boardId: string }> } // Use context object with Promise type
 ) {
-  // let userTrelloToken: string | null = null; // Removed user token variable
+  // Get session cookie
+  const sessionCookie = request.cookies.get(SESSION_COOKIE_NAME);
 
-  // --- Begin Reverted Auth Check ---
-  const { userId: clerkUserId } = await auth(); // Get user ID from Clerk - Added await
-
-  if (!clerkUserId) {
+  if (!sessionCookie?.value) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
-  // --- End Reverted Auth Check ---
+
+  // Get user from session
+  const user = findUserById(sessionCookie.value);
+
+  if (!user) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  }
+
+  const userId = user.id;
 
 
   const { boardId } = await context.params; // Access boardId from context

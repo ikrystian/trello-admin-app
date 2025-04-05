@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'; // Removed useCallback
 import axios from 'axios';
-import { useAuth } from "@clerk/nextjs";
+import { useAuth } from "@/contexts/AuthContext";
 import AdminPanel from '@/components/AdminPanel';
 import DashboardHeader from '@/components/DashboardHeader';
 import PageTransition from '@/components/PageTransition';

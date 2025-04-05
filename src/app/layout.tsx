@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from 'next-themes';
-import { ClerkProvider } from '@clerk/nextjs';
 import { Toaster } from '@/components/ui/sonner';
 
 import './globals.css';
-import { plPL } from '@clerk/localizations'; // Import only Polish localization
+import { AuthProvider } from '@/contexts/AuthContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,31 +40,25 @@ export default function RootLayout({
   children: React.ReactNode;
   // Remove params: { lang: string };
 }>) {
-  // Set Clerk localization to Polish
-  const clerkLocale = plPL;
-
   return (
-    <ClerkProvider
-      localization={clerkLocale} // Use Polish locale
-      afterSignOutUrl={`/?logged_out=true`} // Adjust sign out URL to root
-    >
-      <html lang="pl" className="scroll-smooth" suppressHydrationWarning>{/* Set lang to pl */}
-        <head />{/* Ensure no whitespace before head */}
-        <body
+    <html lang="pl" className="scroll-smooth" suppressHydrationWarning>
+      <head />
+      <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning={true} // Add suppressHydrationWarning
+        suppressHydrationWarning={true}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Toaster richColors closeButton position="top-center" />
-          {children}
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Toaster richColors closeButton position="top-center" />
+            {children}
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
-  </ClerkProvider>
   );
 }

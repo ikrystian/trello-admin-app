@@ -1,6 +1,5 @@
 'use client';
 
-import { UserButton } from '@clerk/nextjs';
 import { Clock } from 'lucide-react';
 import { ThemeSwitcher } from './ThemeSwitcher'; // Use relative path
 // import { LanguageSwitcher } from './LanguageSwitcher'; // Removed import as file is missing
@@ -30,13 +29,6 @@ export default function DashboardHeader({ dictionary }: DashboardHeaderProps) {
         <div className="flex items-center gap-4">
           {/* <LanguageSwitcher /> */} {/* Removed usage */}
           <ThemeSwitcher />
-          <UserButton
-            appearance={{
-              elements: {
-                userButtonAvatarBox: "h-10 w-10"
-              }
-            }}
-          />
         </div>
       </div>
     </header>

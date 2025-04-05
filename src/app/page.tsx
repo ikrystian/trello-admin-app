@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server';
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import LandingPage from '@/components/LandingPage';
 import { getDictionary } from '@/lib/dictionaries'; // Import dictionary loader
@@ -6,11 +6,13 @@ import { getDictionary } from '@/lib/dictionaries'; // Import dictionary loader
 // This server component handles the root path '/'
 // It checks authentication status and redirects to dashboard only if user is logged in
 export default async function RootPage() { // Remove params
-  const { userId } = await auth();
+  const headersList = headers();
+  const cookie = headersList.get('cookie') || '';
+  const hasAuthCookie = cookie.includes('auth_session=');
   const dictionary = await getDictionary(); // Load the default (Polish) dictionary
 
-  // If the user is logged in, redirect to the dashboard
-  if (userId) {
+  // If the user is logged in, redirect to dashboard
+  if (hasAuthCookie) {
     redirect(`/dashboard`); // Update redirect URL to non-localized
   }
 
