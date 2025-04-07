@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
@@ -84,40 +85,41 @@ export default function ChecklistDialog({ cardId, cardName, dictionary }: Checkl
     }
   }, [open, fetchChecklists]);
 
-  const handleOpenDialog = (e: React.MouseEvent) => {
+  // Handle click on the trigger to prevent accordion from toggling
+  const handleTriggerClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent the accordion from toggling
-    setOpen(true);
   };
 
   return (
-    <>
-      <div
-        id={`checklist-button-${cardId}`}
-        onClick={handleOpenDialog}
-        className="ml-2 cursor-pointer inline-flex items-center justify-center gap-1.5 h-8 rounded-md px-3 text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
-        title={dictionary.checklistButton}
-      >
-        <ListChecks id={`checklist-icon-${cardId}`} className="h-4 w-4" />
-        <span id={`checklist-text-${cardId}`} className="flex items-center">
-          {dictionary.checklistButton}
-          {dataLoaded && totalItems > 0 && (
-            <span id={`checklist-count-${cardId}`} className="ml-1.5 inline-flex items-center justify-center rounded-full bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
-              {totalItems}
-            </span>
-          )}
-        </span>
-      </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent
-          id={`checklist-content-${cardId}`}
-          className="sm:max-w-md flex flex-col"
-          style={{ maxHeight: '50vh' }}
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <div
+          id={`checklist-button-${cardId}`}
+          onClick={handleTriggerClick}
+          className="ml-2 cursor-pointer inline-flex items-center justify-center gap-1.5 h-8 rounded-md px-3 text-sm font-medium transition-all hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
+          title={dictionary.checklistButton}
         >
-          <DialogHeader id={`checklist-header-${cardId}`} className="flex-shrink-0">
-            <DialogTitle id={`checklist-title-${cardId}`}>{dictionary.checklistTitle}: {cardName}</DialogTitle>
-            <DialogDescription className="sr-only">{dictionary.checklistTitle} {cardName}</DialogDescription>
-          </DialogHeader>
+          <ListChecks id={`checklist-icon-${cardId}`} className="h-4 w-4" />
+          <span id={`checklist-text-${cardId}`} className="flex items-center">
+            {dictionary.checklistButton}
+            {dataLoaded && totalItems > 0 && (
+              <span id={`checklist-count-${cardId}`} className="ml-1.5 inline-flex items-center justify-center rounded-full bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
+                {totalItems}
+              </span>
+            )}
+          </span>
+        </div>
+      </DialogTrigger>
+
+      <DialogContent
+        id={`checklist-content-${cardId}`}
+        className="sm:max-w-md flex flex-col"
+        style={{ maxHeight: '50vh' }}
+      >
+        <DialogHeader id={`checklist-header-${cardId}`} className="flex-shrink-0">
+          <DialogTitle id={`checklist-title-${cardId}`}>{dictionary.checklistTitle}: {cardName}</DialogTitle>
+          <DialogDescription className="sr-only">{dictionary.checklistTitle} {cardName}</DialogDescription>
+        </DialogHeader>
 
           <div id={`checklist-scrollable-content-${cardId}`} className="overflow-y-auto flex-grow pr-2" style={{ maxHeight: 'calc(50vh - 80px)' }}>
             {isLoading ? (
@@ -160,7 +162,6 @@ export default function ChecklistDialog({ cardId, cardName, dictionary }: Checkl
             )}
           </div>
         </DialogContent>
-      </Dialog>
-    </>
+    </Dialog>
   );
 }

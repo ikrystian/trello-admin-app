@@ -20,7 +20,7 @@ export function SkeletonAccordion({ listCount = 3, cardCount = 5 }: SkeletonAcco
             <Accordion id="skeleton-list-accordion" type="multiple" value={Array.from({ length: listCount }).map((_, i) => `skeleton-list-${i}`)}>
                 {Array.from({ length: listCount }).map((_, listIndex) => (
                     <AccordionItem id={`skeleton-list-item-${listIndex}`} key={`skeleton-list-${listIndex}`} value={`skeleton-list-${listIndex}`} className="border rounded bg-muted/30">
-                        <AccordionTrigger id={`skeleton-list-trigger-${listIndex}`} className="p-3 text-base font-bold hover:no-underline rounded-t">
+                        <AccordionTrigger id={`skeleton-list-trigger-${listIndex}`} className="p-3 text-base font-bold hover:no-underline hover:bg-accent/50 rounded-t transition-colors duration-200">
                             <div id={`skeleton-list-content-${listIndex}`} className="flex justify-between items-center w-full">
                                 <Skeleton id={`skeleton-list-title-${listIndex}`} className="h-6 w-40" />
                                 <Skeleton id={`skeleton-list-stats-${listIndex}`} className="h-5 w-32" />
@@ -35,7 +35,7 @@ export function SkeletonAccordion({ listCount = 3, cardCount = 5 }: SkeletonAcco
                                         value={`skeleton-card-${listIndex}-${cardIndex}`}
                                         className="border rounded mb-2 bg-background"
                                     >
-                                        <AccordionTrigger id={`skeleton-card-trigger-${listIndex}-${cardIndex}`} className="p-2 text-sm font-semibold hover:no-underline group rounded-t">
+                                        <AccordionTrigger id={`skeleton-card-trigger-${listIndex}-${cardIndex}`} className="p-2 text-sm font-semibold hover:no-underline hover:bg-accent/50 group rounded-t transition-colors duration-200">
                                             <div id={`skeleton-card-title-container-${listIndex}-${cardIndex}`} className="flex items-center h-full flex-grow mr-2 overflow-hidden">
                                                 <Skeleton id={`skeleton-card-label-${listIndex}-${cardIndex}`} className="w-3 h-3 mr-2 rounded-sm flex-shrink-0" />
                                                 <Skeleton id={`skeleton-card-title-${listIndex}-${cardIndex}`} className="h-5 w-48" />

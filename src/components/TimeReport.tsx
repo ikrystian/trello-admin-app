@@ -139,7 +139,7 @@ function CardGroup({ card, memberMap, dictionary }: CardGroupProps) { // Remove 
         >
              <AccordionTrigger
                 id={generateId('cardGroup', 'accordionTrigger', card.cardId)}
-                className="p-2 text-sm font-semibold hover:no-underline group rounded-t"
+                className="p-2 text-sm font-semibold hover:no-underline hover:bg-accent/50 group rounded-t transition-colors duration-200"
              >
                  {/* Main content container with vertical alignment */}
                  <div
@@ -549,7 +549,7 @@ export default function TimeReport({ timeData, listMap, memberMap, dictionary }:
             >
                 {groupedAndSortedData.map((listGroup) => (
                     <AccordionItem key={listGroup.listName} value={listGroup.listName} className="border rounded bg-muted/30">
-                    <AccordionTrigger className="p-3 text-base font-bold hover:no-underline rounded-t">
+                    <AccordionTrigger className="p-3 text-base font-bold hover:no-underline hover:bg-accent/50 rounded-t transition-colors duration-200">
                         <span className="flex-grow mr-2 text-left">{listGroup.listName}</span>
                         {/* Use dictionary for labels */}
                         <span className="text-sm font-normal text-muted-foreground whitespace-nowrap pr-2">
