@@ -36,6 +36,7 @@ import ChecklistDialog from "./ChecklistDialog";
 
 // Import types from types file
 import { ProcessedCardData } from '@/types/time-report';
+import { generateId } from '@/lib/utils';
 
 // Define dictionary structure for TimeReport and its sub-components
 export interface TimeReportDictionary {
@@ -131,28 +132,46 @@ function CardGroup({ card, memberMap, dictionary }: CardGroupProps) { // Remove 
 
     // Using AccordionItem for each card. The parent component should wrap these in <Accordion type="multiple">
     return (
-        <AccordionItem value={card.cardId} className="border rounded mb-2 bg-background">
-             <AccordionTrigger className="p-2 text-sm font-semibold hover:no-underline group rounded-t">
+        <AccordionItem
+            id={generateId('cardGroup', 'accordionItem', card.cardId)}
+            value={card.cardId}
+            className="border rounded mb-2 bg-background"
+        >
+             <AccordionTrigger
+                id={generateId('cardGroup', 'accordionTrigger', card.cardId)}
+                className="p-2 text-sm font-semibold hover:no-underline group rounded-t"
+             >
                  {/* Main content container with vertical alignment */}
-                 <div className="flex items-center flex-grow mr-2 overflow-hidden">
+                 <div
+                    id={generateId('cardGroup', 'mainContent', card.cardId)}
+                    className="flex items-center flex-grow mr-2 overflow-hidden h-full my-auto"
+                 >
                     {/* Colored square for label */}
                     {labelColor && (
                         <div
+                            id={generateId('cardGroup', 'labelColor', card.cardId)}
                             className="w-3 h-3 mr-2 rounded-sm flex-shrink-0"
                             style={{ backgroundColor: labelColor }}
                         />
                     )}
-                    <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-left">
+                    <span
+                        id={generateId('cardGroup', 'cardName', card.cardId)}
+                        className="overflow-hidden overflow-ellipsis whitespace-nowrap text-left"
+                    >
                         {card.cardName}
                     </span>
                 </div>
                 {/* Right side elements container with vertical alignment */}
-                <div className="flex items-center">
+                <div id={generateId('cardGroup', 'rightSide', card.cardId)} className="flex items-center">
                     {/* Use dictionary for labels */}
-                    <span className="text-xs font-normal text-muted-foreground whitespace-nowrap pr-2">
+                    <span
+                        id={generateId('cardGroup', 'hoursInfo', card.cardId)}
+                        className="text-xs font-normal text-muted-foreground whitespace-nowrap pr-2"
+                    >
                         ({dictionary.estimated}: {formatHours(card.estimatedHours)}h / {dictionary.reported}: {formatHours(card.totalReportedHours)}h)
                     </span>
                     <a
+                        id={generateId('cardGroup', 'trelloLink', card.cardId)}
                         href={card.cardUrl}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -175,61 +194,118 @@ function CardGroup({ card, memberMap, dictionary }: CardGroupProps) { // Remove 
                     />
                 </div>
             </AccordionTrigger>
-            <AccordionContent className="border-t pt-0"> {/* Remove default padding-top */}
+            <AccordionContent
+                id={generateId('cardGroup', 'accordionContent', card.cardId)}
+                className="border-t pt-0"
+            >
                  {/* Content remains largely the same (Table or message) */}
                  {sortedEntries.length > 0 ? (
-                    <Table className="text-sm">
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[150px]">{dictionary.userHeader}</TableHead>
-                                <TableHead className="w-[100px]">{dictionary.dateHeader}</TableHead>
-                                <TableHead className="w-[80px] text-right">{dictionary.hoursHeader}</TableHead>
-                                <TableHead>{dictionary.commentHeader}</TableHead>
+                    <Table
+                        id={generateId('cardGroup', 'table', card.cardId)}
+                        className="text-sm"
+                    >
+                        <TableHeader id={generateId('cardGroup', 'tableHeader', card.cardId)}>
+                            <TableRow id={generateId('cardGroup', 'headerRow', card.cardId)}>
+                                <TableHead
+                                    id={generateId('cardGroup', 'userHeader', card.cardId)}
+                                    className="w-[150px]"
+                                >
+                                    {dictionary.userHeader}
+                                </TableHead>
+                                <TableHead
+                                    id={generateId('cardGroup', 'dateHeader', card.cardId)}
+                                    className="w-[100px]"
+                                >
+                                    {dictionary.dateHeader}
+                                </TableHead>
+                                <TableHead
+                                    id={generateId('cardGroup', 'hoursHeader', card.cardId)}
+                                    className="w-[80px] text-right"
+                                >
+                                    {dictionary.hoursHeader}
+                                </TableHead>
+                                <TableHead id={generateId('cardGroup', 'commentHeader', card.cardId)}>
+                                    {dictionary.commentHeader}
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
-                        <TableBody>
+                        <TableBody id={generateId('cardGroup', 'tableBody', card.cardId)}>
                             {sortedEntries.map((entry, index) => {
                                 const userName = entry.memberId ? memberMap[entry.memberId]?.fullName || entry.memberId : dictionary.noData || 'N/A';
                                 const dateStr = formatDate(entry.date, dictionary); // Pass only dictionary
                                 const hoursStr = formatHours(entry.hours);
+                                const entryId = `${entry.date || ''}-${entry.memberId || ''}-${index}`;
                                 return (
-                                    <TableRow key={`${entry.date}-${entry.memberId}-${index}`}>
-                                        <TableCell className="font-medium text-sm">
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <div className="flex items-center gap-2">
-                                                    {entry.memberId && memberMap[entry.memberId]?.avatarUrl ? (
-                                                        <Image
-                                                            src={memberMap[entry.memberId].avatarUrl!} // Add non-null assertion if confident it exists
-                                                            alt={memberMap[entry.memberId].fullName || 'Avatar'} // Provide default alt text
-                                                            width={24} // Corresponds to w-6
-                                                            height={24} // Corresponds to h-6
-                                                            className="rounded-full" // Keep the rounding
-                                                        />
-                                                    ) : (
-                                                        <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs">
-                                                            {userName.charAt(0)}
+                                    <TableRow
+                                        id={generateId('cardGroup', 'entryRow', `${card.cardId}-${entryId}`)}
+                                        key={entryId}
+                                    >
+                                        <TableCell
+                                            id={generateId('cardGroup', 'userCell', `${card.cardId}-${entryId}`)}
+                                            className="font-medium text-sm"
+                                        >
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <div
+                                                            id={generateId('cardGroup', 'userAvatar', `${card.cardId}-${entryId}`)}
+                                                            className="flex items-center gap-2"
+                                                        >
+                                                            {entry.memberId && memberMap[entry.memberId]?.avatarUrl ? (
+                                                                <Image
+                                                                    id={generateId('cardGroup', 'avatarImage', `${card.cardId}-${entryId}`)}
+                                                                    src={memberMap[entry.memberId].avatarUrl!}
+                                                                    alt={memberMap[entry.memberId].fullName || 'Avatar'}
+                                                                    width={24}
+                                                                    height={24}
+                                                                    className="rounded-full"
+                                                                />
+                                                            ) : (
+                                                                <div
+                                                                    id={generateId('cardGroup', 'avatarPlaceholder', `${card.cardId}-${entryId}`)}
+                                                                    className="w-6 h-6 rounded-full bg-muted flex items-center justify-center text-xs"
+                                                                >
+                                                                    {userName.charAt(0)}
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                    )}
-                                                </div>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                <p>{userName}</p>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
-                                </TableCell>
-                                        <TableCell className="text-sm">{dateStr}</TableCell>
-                                        <TableCell className="text-right text-sm">{hoursStr}h</TableCell>
-                                        <TableCell className="text-sm">{entry.comment || ''}</TableCell>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent id={generateId('cardGroup', 'tooltipContent', `${card.cardId}-${entryId}`)}>
+                                                        <p id={generateId('cardGroup', 'userName', `${card.cardId}-${entryId}`)}>{userName}</p>
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </TableCell>
+                                        <TableCell
+                                            id={generateId('cardGroup', 'dateCell', `${card.cardId}-${entryId}`)}
+                                            className="text-sm"
+                                        >
+                                            {dateStr}
+                                        </TableCell>
+                                        <TableCell
+                                            id={generateId('cardGroup', 'hoursCell', `${card.cardId}-${entryId}`)}
+                                            className="text-right text-sm"
+                                        >
+                                            {hoursStr}h
+                                        </TableCell>
+                                        <TableCell
+                                            id={generateId('cardGroup', 'commentCell', `${card.cardId}-${entryId}`)}
+                                            className="text-sm"
+                                        >
+                                            {entry.comment || ''}
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}
                         </TableBody>
                     </Table>
                 ) : (
-                    <p className="px-3 py-2 text-xs text-muted-foreground italic">{dictionary.noTimeEntries}</p>
+                    <p
+                        id={generateId('cardGroup', 'noEntries', card.cardId)}
+                        className="px-3 py-2 text-xs text-muted-foreground italic"
+                    >
+                        {dictionary.noTimeEntries}
+                    </p>
                 )}
             </AccordionContent>
         </AccordionItem>
@@ -249,42 +325,55 @@ interface ReportSummaryProps {
 
 function ReportSummary({ totalPlannedHours, totalLoggedHours, totalTasks, hoursByLabel, dictionary }: ReportSummaryProps) {
     return (
-        <Card className="mb-6">
-            <CardHeader className="pb-3">
-                <CardTitle>{dictionary.summaryTitle}</CardTitle>
+        <Card id={generateId('reportSummary', 'card', 'main')} className="mb-6">
+            <CardHeader id={generateId('reportSummary', 'cardHeader', 'main')} className="pb-3">
+                <CardTitle id={generateId('reportSummary', 'cardTitle', 'main')}>{dictionary.summaryTitle}</CardTitle>
             </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                    <div className="p-4 rounded-lg border bg-card">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">{dictionary.plannedHours}</h3>
-                        <p className="text-2xl font-bold">{formatHours(totalPlannedHours)}h</p>
+            <CardContent id={generateId('reportSummary', 'cardContent', 'main')}>
+                <div id={generateId('reportSummary', 'statsGrid', 'main')} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                    <div id={generateId('reportSummary', 'plannedHoursCard', 'main')} className="p-4 rounded-lg border bg-card">
+                        <h3 id={generateId('reportSummary', 'plannedHoursTitle', 'main')} className="text-sm font-medium text-muted-foreground mb-1">{dictionary.plannedHours}</h3>
+                        <p id={generateId('reportSummary', 'plannedHoursValue', 'main')} className="text-2xl font-bold">{formatHours(totalPlannedHours)}h</p>
                     </div>
-                    <div className="p-4 rounded-lg border bg-card">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">{dictionary.reportedHours}</h3>
-                        <p className="text-2xl font-bold">{formatHours(totalLoggedHours)}h</p>
+                    <div id={generateId('reportSummary', 'reportedHoursCard', 'main')} className="p-4 rounded-lg border bg-card">
+                        <h3 id={generateId('reportSummary', 'reportedHoursTitle', 'main')} className="text-sm font-medium text-muted-foreground mb-1">{dictionary.reportedHours}</h3>
+                        <p id={generateId('reportSummary', 'reportedHoursValue', 'main')} className="text-2xl font-bold">{formatHours(totalLoggedHours)}h</p>
                     </div>
-                    <div className="p-4 rounded-lg border bg-card">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">{dictionary.taskCount}</h3>
-                        <p className="text-2xl font-bold">{totalTasks}</p>
+                    <div id={generateId('reportSummary', 'taskCountCard', 'main')} className="p-4 rounded-lg border bg-card">
+                        <h3 id={generateId('reportSummary', 'taskCountTitle', 'main')} className="text-sm font-medium text-muted-foreground mb-1">{dictionary.taskCount}</h3>
+                        <p id={generateId('reportSummary', 'taskCountValue', 'main')} className="text-2xl font-bold">{totalTasks}</p>
                     </div>
                 </div>
 
                 {Object.keys(hoursByLabel).length > 0 && (
-                    <div>
-                        <h3 className="text-sm font-medium mb-2">{dictionary.hoursByLabelTitle}</h3>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                    <div id={generateId('reportSummary', 'labelSection', 'main')}>
+                        <h3 id={generateId('reportSummary', 'labelTitle', 'main')} className="text-sm font-medium mb-2">{dictionary.hoursByLabelTitle}</h3>
+                        <div id={generateId('reportSummary', 'labelGrid', 'main')} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                             {Object.entries(hoursByLabel)
                                 .sort(([, a], [, b]) => b.hours - a.hours) // Keep sorting logic
                                 .map(([labelId, label]) => (
-                                    <div key={labelId} className="flex items-center gap-2 p-2 rounded-md border">
+                                    <div
+                                        id={generateId('reportSummary', 'labelItem', labelId)}
+                                        key={labelId}
+                                        className="flex items-center gap-2 p-2 rounded-md border"
+                                    >
                                         <div
+                                            id={generateId('reportSummary', 'labelColor', labelId)}
                                             className="w-4 h-4 rounded-sm flex-shrink-0"
                                             style={{ backgroundColor: getTrelloLabelColor(label.color) }}
                                         />
-                                        <span className="text-sm truncate flex-grow">
+                                        <span
+                                            id={generateId('reportSummary', 'labelName', labelId)}
+                                            className="text-sm truncate flex-grow"
+                                        >
                                             {label.name || `(${label.color})`}
                                         </span>
-                                        <span className="text-sm font-medium">{formatHours(label.hours)}h</span>
+                                        <span
+                                            id={generateId('reportSummary', 'labelHours', labelId)}
+                                            className="text-sm font-medium"
+                                        >
+                                            {formatHours(label.hours)}h
+                                        </span>
                                     </div>
                                 ))
                             }

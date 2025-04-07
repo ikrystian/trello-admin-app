@@ -36,7 +36,7 @@ export function SkeletonAccordion({ listCount = 3, cardCount = 5 }: SkeletonAcco
                                         className="border rounded mb-2 bg-background"
                                     >
                                         <AccordionTrigger id={`skeleton-card-trigger-${listIndex}-${cardIndex}`} className="p-2 text-sm font-semibold hover:no-underline group rounded-t">
-                                            <div id={`skeleton-card-title-container-${listIndex}-${cardIndex}`} className="flex items-center flex-grow mr-2 overflow-hidden">
+                                            <div id={`skeleton-card-title-container-${listIndex}-${cardIndex}`} className="flex items-center h-full flex-grow mr-2 overflow-hidden">
                                                 <Skeleton id={`skeleton-card-label-${listIndex}-${cardIndex}`} className="w-3 h-3 mr-2 rounded-sm flex-shrink-0" />
                                                 <Skeleton id={`skeleton-card-title-${listIndex}-${cardIndex}`} className="h-5 w-48" />
                                             </div>
