@@ -116,8 +116,8 @@ export default function ChecklistDialog({ cardId, cardName, dictionary }: Checkl
         className="sm:max-w-md flex flex-col"
         style={{ maxHeight: '50vh' }}
       >
-        <DialogHeader id={`checklist-header-${cardId}`} className="flex-shrink-0">
-          <DialogTitle id={`checklist-title-${cardId}`}>{dictionary.checklistTitle}: {cardName}</DialogTitle>
+        <DialogTitle id={`checklist-title-${cardId}`} className="mb-2">{dictionary.checklistTitle}: {cardName}</DialogTitle>
+        <DialogHeader id={`checklist-header-${cardId}`} className="flex-shrink-0 mt-0 pt-0">
           <VisuallyHidden>
             <DialogDescription id={`checklist-description-${cardId}`}>
               {dictionary.checklistTitle} {cardName}
