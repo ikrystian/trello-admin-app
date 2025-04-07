@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { ListChecks } from 'lucide-react';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   Dialog,
   DialogContent,
@@ -118,7 +119,11 @@ export default function ChecklistDialog({ cardId, cardName, dictionary }: Checkl
       >
         <DialogHeader id={`checklist-header-${cardId}`} className="flex-shrink-0">
           <DialogTitle id={`checklist-title-${cardId}`}>{dictionary.checklistTitle}: {cardName}</DialogTitle>
-          <DialogDescription className="sr-only">{dictionary.checklistTitle} {cardName}</DialogDescription>
+          <VisuallyHidden>
+            <DialogDescription id={`checklist-description-${cardId}`}>
+              {dictionary.checklistTitle} {cardName}
+            </DialogDescription>
+          </VisuallyHidden>
         </DialogHeader>
 
           <div id={`checklist-scrollable-content-${cardId}`} className="overflow-y-auto flex-grow pr-2" style={{ maxHeight: 'calc(50vh - 80px)' }}>

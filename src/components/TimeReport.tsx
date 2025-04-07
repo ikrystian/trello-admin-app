@@ -330,7 +330,7 @@ function ReportSummary({ totalPlannedHours, totalLoggedHours, totalTasks, hoursB
                 <CardTitle id={generateId('reportSummary', 'cardTitle', 'main')}>{dictionary.summaryTitle}</CardTitle>
             </CardHeader>
             <CardContent id={generateId('reportSummary', 'cardContent', 'main')}>
-                <div id={generateId('reportSummary', 'statsGrid', 'main')} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div id={generateId('reportSummary', 'statsGrid', 'main')} className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-center">
                     <div id={generateId('reportSummary', 'plannedHoursCard', 'main')} className="p-4 rounded-lg border bg-card">
                         <h3 id={generateId('reportSummary', 'plannedHoursTitle', 'main')} className="text-sm font-medium text-muted-foreground mb-1">{dictionary.plannedHours}</h3>
                         <p id={generateId('reportSummary', 'plannedHoursValue', 'main')} className="text-2xl font-bold">{formatHours(totalPlannedHours)}h</p>
