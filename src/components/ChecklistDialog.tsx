@@ -102,7 +102,6 @@ export default function ChecklistDialog({ cardId, cardName, dictionary }: Checkl
         >
           <ListChecks id={`checklist-icon-${cardId}`} className="h-4 w-4" />
           <span id={`checklist-text-${cardId}`} className="flex items-center">
-            {dictionary.checklistButton}
             {dataLoaded && totalItems > 0 && (
               <span id={`checklist-count-${cardId}`} className="ml-1.5 inline-flex items-center justify-center rounded-full bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
                 {totalItems}
