@@ -32,6 +32,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"; // Import Accordion components
+import ChecklistDialog from "./ChecklistDialog";
 
 // Import types from types file
 import { ProcessedCardData } from '@/types/time-report';
@@ -56,6 +57,10 @@ export interface TimeReportDictionary {
     openInTrello: string;
     estimated: string; // Short for Estimated
     reported: string; // Short for Reported
+    checklistButton: string;
+    checklistTitle: string;
+    noChecklists: string;
+    errorLoading: string;
 }
 
 interface TimeReportProps {
@@ -128,7 +133,7 @@ function CardGroup({ card, memberMap, dictionary }: CardGroupProps) { // Remove 
     return (
         <AccordionItem value={card.cardId} className="border rounded mb-2 bg-background">
              <AccordionTrigger className="p-2 text-sm font-semibold hover:no-underline group rounded-t">
-                 {/* Removed the manual triangle span */}
+                 {/* Main content container with vertical alignment */}
                  <div className="flex items-center flex-grow mr-2 overflow-hidden">
                     {/* Colored square for label */}
                     {labelColor && (
@@ -141,20 +146,34 @@ function CardGroup({ card, memberMap, dictionary }: CardGroupProps) { // Remove 
                         {card.cardName}
                     </span>
                 </div>
-                {/* Use dictionary for labels */}
-                <span className="text-xs font-normal text-muted-foreground whitespace-nowrap pr-2">
-                    ({dictionary.estimated}: {formatHours(card.estimatedHours)}h / {dictionary.reported}: {formatHours(card.totalReportedHours)}h)
-                </span>
-                <a
-                    href={card.cardUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-2 opacity-70 hover:opacity-100 transition-all duration-200 hover:text-primary hover:scale-110"
-                    title={dictionary.openInTrello} // Use dictionary
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    🔗 {/* Keep icon or replace with localized text/icon */}
-                </a>
+                {/* Right side elements container with vertical alignment */}
+                <div className="flex items-center">
+                    {/* Use dictionary for labels */}
+                    <span className="text-xs font-normal text-muted-foreground whitespace-nowrap pr-2">
+                        ({dictionary.estimated}: {formatHours(card.estimatedHours)}h / {dictionary.reported}: {formatHours(card.totalReportedHours)}h)
+                    </span>
+                    <a
+                        href={card.cardUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-2 opacity-70 hover:opacity-100 transition-all duration-200 hover:text-primary hover:scale-110 flex items-center"
+                        title={dictionary.openInTrello} // Use dictionary
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        🔗 {/* Keep icon or replace with localized text/icon */}
+                    </a>
+                    {/* Checklist button - only show if card has a checklist */}
+                    <ChecklistDialog
+                        cardId={card.cardId}
+                        cardName={card.cardName}
+                        dictionary={{
+                            checklistButton: dictionary.checklistButton,
+                            checklistTitle: dictionary.checklistTitle,
+                            noChecklists: dictionary.noChecklists,
+                            errorLoading: dictionary.errorLoading
+                        }}
+                    />
+                </div>
             </AccordionTrigger>
             <AccordionContent className="border-t pt-0"> {/* Remove default padding-top */}
                  {/* Content remains largely the same (Table or message) */}

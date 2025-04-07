@@ -225,7 +225,11 @@
       "commentHeader": "Comment",
       "openInTrello": "Open card in Trello",
       "estimated": "Est",
-      "reported": "Rep"
+      "reported": "Rep",
+      "checklistButton": "Checklist",
+      "checklistTitle": "Card Checklist",
+      "noChecklists": "No checklists found for this card",
+      "errorLoading": "Error loading checklist"
     },
     "chartsSection": {
       "hoursAxisLabel": "Hours",

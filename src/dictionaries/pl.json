@@ -225,7 +225,11 @@
       "commentHeader": "Komentarz",
       "openInTrello": "Otwórz kartę w Trello",
       "estimated": "Szac",
-      "reported": "Rap"
+      "reported": "Rap",
+      "checklistButton": "Lista zadań",
+      "checklistTitle": "Lista zadań dla karty",
+      "noChecklists": "Brak list zadań dla tej karty",
+      "errorLoading": "Błąd podczas ładowania listy zadań"
     },
     "chartsSection": {
       "hoursAxisLabel": "Godziny",
