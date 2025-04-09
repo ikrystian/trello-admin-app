@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { format } from "date-fns"; // Import format directly
 import { pl } from 'date-fns/locale'; // Import only Polish locale
@@ -48,6 +48,7 @@ export interface TimeReportDictionary {
     plannedHours: string;
     reportedHours: string;
     taskCount: string;
+    subtaskCount: string; // Added for subtasks count
     hoursByLabelTitle: string;
     expandAll: string;
     collapseAll: string;
@@ -319,11 +320,12 @@ interface ReportSummaryProps {
     totalPlannedHours: number;
     totalLoggedHours: number;
     totalTasks: number;
+    totalSubtasks: number;
     hoursByLabel: Record<string, { name: string; color: string; hours: number }>;
     dictionary: TimeReportDictionary; // Pass dictionary
 }
 
-function ReportSummary({ totalPlannedHours, totalLoggedHours, totalTasks, hoursByLabel, dictionary }: ReportSummaryProps) {
+function ReportSummary({ totalPlannedHours, totalLoggedHours, totalTasks, totalSubtasks, hoursByLabel, dictionary }: ReportSummaryProps) {
     return (
         <Card id={generateId('reportSummary', 'card', 'main')} className="mb-6">
             <CardHeader id={generateId('reportSummary', 'cardHeader', 'main')} className="pb-3">
@@ -340,8 +342,19 @@ function ReportSummary({ totalPlannedHours, totalLoggedHours, totalTasks, hoursB
                         <p id={generateId('reportSummary', 'reportedHoursValue', 'main')} className="text-2xl font-bold">{formatHours(totalLoggedHours)}h</p>
                     </div>
                     <div id={generateId('reportSummary', 'taskCountCard', 'main')} className="p-4 rounded-lg border bg-card">
-                        <h3 id={generateId('reportSummary', 'taskCountTitle', 'main')} className="text-sm font-medium text-muted-foreground mb-1">{dictionary.taskCount}</h3>
-                        <p id={generateId('reportSummary', 'taskCountValue', 'main')} className="text-2xl font-bold">{totalTasks}</p>
+                        <div className="flex flex-col h-full">
+                            <h3 id={generateId('reportSummary', 'taskCountTitle', 'main')} className="text-sm font-medium text-muted-foreground mb-1">{dictionary.taskCount}</h3>
+                            <div className="flex justify-center items-center gap-3 mt-auto">
+                                <div className="text-center">
+                                    <p id={generateId('reportSummary', 'taskCountValue', 'main')} className="text-2xl font-bold">{totalTasks}</p>
+                                    <p className="text-xs text-muted-foreground">{dictionary.taskCount}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p id={generateId('reportSummary', 'subtaskCountValue', 'main')} className="text-2xl font-bold">{totalSubtasks}</p>
+                                    <p className="text-xs text-muted-foreground">{dictionary.subtaskCount}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -388,6 +401,10 @@ function ReportSummary({ totalPlannedHours, totalLoggedHours, totalTasks, hoursB
 // --- Main TimeReport Component ---
 
 export default function TimeReport({ timeData, listMap, memberMap, dictionary }: TimeReportProps) { // Remove lang
+    // State for tasks and subtasks counts
+    const [totalCards, setTotalCards] = useState<number | null>(null);
+    const [totalSubtasks, setTotalSubtasks] = useState<number | null>(null);
+
     // Calculate summary data
     const summaryData = useMemo(() => {
         let totalPlannedHours = 0;
@@ -437,6 +454,57 @@ export default function TimeReport({ timeData, listMap, memberMap, dictionary }:
             totalTasks,
             hoursByLabel
         };
+    }, [timeData]);
+
+    // Fetch checklist items and update tasks and subtasks counts
+    useEffect(() => {
+        // Only run if we have cards
+        if (!timeData || timeData.length === 0) {
+            setTotalCards(0);
+            setTotalSubtasks(0);
+            return;
+        }
+
+        // Get base task count (cards with time entries)
+        const baseTasks = timeData.filter(card =>
+            card.timeEntries.some(entry => entry.hours > 0)
+        ).length;
+
+        // Set the cards count immediately
+        setTotalCards(baseTasks);
+
+        // Fetch checklist items for all cards
+        const fetchAllChecklists = async () => {
+            try {
+                const checklistPromises = timeData.map(async (card) => {
+                    try {
+                        const response = await fetch(`/api/cards/${card.cardId}/checklists`);
+                        if (response.ok) {
+                            const checklists = await response.json();
+                            return checklists.reduce((total: number, checklist: { checkItems: { id: string; name: string; state: string }[] }) => {
+                                return total + checklist.checkItems.length;
+                            }, 0);
+                        }
+                        return 0;
+                    } catch (error) {
+                        console.error(`Error fetching checklists for card ${card.cardId}:`, error);
+                        return 0;
+                    }
+                });
+
+                const checklistCounts = await Promise.all(checklistPromises);
+                const totalChecklistItems = checklistCounts.reduce((sum, count) => sum + count, 0);
+
+                // Update subtasks count
+                setTotalSubtasks(totalChecklistItems);
+            } catch (error) {
+                console.error('Error fetching checklists:', error);
+                // Fallback to zero subtasks
+                setTotalSubtasks(0);
+            }
+        };
+
+        fetchAllChecklists();
     }, [timeData]);
 
     // Define the type for grouped data
@@ -530,7 +598,8 @@ export default function TimeReport({ timeData, listMap, memberMap, dictionary }:
             <ReportSummary
                 totalPlannedHours={summaryData.totalPlannedHours}
                 totalLoggedHours={summaryData.totalLoggedHours}
-                totalTasks={summaryData.totalTasks}
+                totalTasks={totalCards !== null ? totalCards : summaryData.totalTasks}
+                totalSubtasks={totalSubtasks !== null ? totalSubtasks : 0}
                 hoursByLabel={summaryData.hoursByLabel}
                 dictionary={dictionary} // Pass dictionary
             />
