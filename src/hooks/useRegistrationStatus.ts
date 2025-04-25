@@ -21,7 +21,7 @@ export function useRegistrationStatus() {
         
         // If the response is 403, registration is disabled
         setRegistrationEnabled(response.status !== 403);
-      } catch (error) {
+      } catch {
         // If there's an error, assume registration is enabled
         setRegistrationEnabled(true);
       } finally {
