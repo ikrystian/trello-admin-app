@@ -4,6 +4,15 @@ import { SignUpCredentials } from '@/types/auth';
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if registration is enabled
+    const registrationEnabled = process.env.REGISTRATION_ENABLED === 'true';
+    if (!registrationEnabled) {
+      return NextResponse.json(
+        { message: 'Rejestracja jest obecnie wyłączona. Skontaktuj się z administratorem.' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { email, name, password } = body as SignUpCredentials;
 

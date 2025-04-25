@@ -3,11 +3,13 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
+import { useRegistrationStatus } from '@/hooks/useRegistrationStatus';
 
 export default function SignInForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signIn, isLoading, error } = useAuth();
+  const { registrationEnabled } = useRegistrationStatus();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,12 +72,19 @@ export default function SignInForm() {
       </form>
 
       <div className="text-center text-sm">
-        <p>
-          Nie masz konta?{' '}
-          <Link href="/sign-up" className="text-primary hover:underline">
-            Zarejestruj się
-          </Link>
-        </p>
+        {registrationEnabled ? (
+          <p>
+            Nie masz konta?{' '}
+            <Link href="/sign-up" className="text-primary hover:underline">
+              Zarejestruj się
+            </Link>
+          </p>
+        ) : registrationEnabled === false ? (
+          <p>
+            Rejestracja nowych użytkowników jest obecnie wyłączona.
+            Skontaktuj się z administratorem systemu, aby uzyskać dostęp.
+          </p>
+        ) : null}
       </div>
     </div>
   );

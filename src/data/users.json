@@ -5,5 +5,19 @@
     "name": "Krystian Kuzminski",
     "password": "KUdziak1991!",
     "createdAt": "2025-04-05T07:54:52.523Z"
+  },
+  {
+    "id": "a101d748-ecdc-4651-af16-f1afe48c2a33",
+    "email": "max@hofumarketing.pl",
+    "name": "Max",
+    "password": "9826nesbbco9r",
+    "createdAt": "2025-04-24T23:33:16.799Z"
+  },
+  {
+    "id": "39059e55-0202-4039-875c-dd3e8dbb6088",
+    "email": "bpcoders@gmail.com",
+    "name": "Krystian",
+    "password": "kudziak1991",
+    "createdAt": "2025-04-24T23:46:44.635Z"
   }
 ]

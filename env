@@ -4,3 +4,4 @@ TRELLO_POWERUP_ID=
 
 # Auth configuration
 AUTH_SECRET_KEY=your_secret_key_here
+REGISTRATION_ENABLED=false

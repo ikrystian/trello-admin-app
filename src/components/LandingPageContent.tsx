@@ -7,9 +7,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ArrowRight, Clock, BarChart3, Users, CheckCircle, Calendar, PieChart, FileText, Star } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/ThemeSwitcher';
-// Remove LanguageSwitcher import
 import PageTransition from '@/components/PageTransition';
 import ScrollAnimation from '@/components/ScrollAnimation';
+import { useRegistrationStatus } from '@/hooks/useRegistrationStatus';
 
 // Define and export the expected structure for the dictionary passed to this component
 // NOTE: This needs to be kept in sync with the actual dictionary files (en.json, pl.json)
@@ -76,6 +76,7 @@ interface LandingPageContentProps {
 
 export default function LandingPageContent({ dictionary }: LandingPageContentProps) { // Remove lang from props
   // Now using the strongly-typed dictionary object
+  const { registrationEnabled } = useRegistrationStatus();
 
   return (
     <PageTransition>
@@ -100,15 +101,15 @@ export default function LandingPageContent({ dictionary }: LandingPageContentPro
               </Link>
             </nav>
             <div className="flex items-center gap-4">
-              {/* Remove LanguageSwitcher usage */}
               <ThemeSwitcher />
-              {/* Update links to remove lang */}
               <Link href={`/sign-in`}>
                 <Button variant="ghost" className="hidden sm:inline-flex hover:scale-105 transition-transform duration-300">{dictionary.signIn}</Button>
               </Link>
-              <Link href={`/sign-up`}>
-                <Button className="animate-pulse hover:animate-none hover:scale-105 transition-transform duration-300">{dictionary.getStarted}</Button>
-              </Link>
+              {registrationEnabled !== false && (
+                <Link href={`/sign-up`}>
+                  <Button className="animate-pulse hover:animate-none hover:scale-105 transition-transform duration-300">{dictionary.getStarted}</Button>
+                </Link>
+              )}
             </div>
           </div>
         </header>
@@ -129,12 +130,21 @@ export default function LandingPageContent({ dictionary }: LandingPageContentPro
                 {dictionary.description}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <Link href={`/sign-up`}>
-                  <Button size="lg" className="gap-1.5 hover:scale-105 transition-transform duration-300">
-                    {dictionary.hero.buttonFree}
-                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
-                  </Button>
-                </Link>
+                {registrationEnabled !== false ? (
+                  <Link href={`/sign-up`}>
+                    <Button size="lg" className="gap-1.5 hover:scale-105 transition-transform duration-300">
+                      {dictionary.hero.buttonFree}
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href={`/sign-in`}>
+                    <Button size="lg" className="gap-1.5 hover:scale-105 transition-transform duration-300">
+                      {dictionary.signIn}
+                      <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </Button>
+                  </Link>
+                )}
                 <Link href="#features">
                   <Button size="lg" variant="outline" className="hover:scale-105 transition-transform duration-300">
                     {dictionary.hero.buttonLearn}
@@ -371,9 +381,15 @@ export default function LandingPageContent({ dictionary }: LandingPageContentPro
                       <span className="text-sm">{dictionary.pricing.free.item4}</span>
                     </li>
                   </ul>
-                  <Link href={`/sign-up`}>
-                    <Button className="w-full group-hover:bg-primary/90 transition-colors">{dictionary.pricing.free.button}</Button>
-                  </Link>
+                  {registrationEnabled !== false ? (
+                    <Link href={`/sign-up`}>
+                      <Button className="w-full group-hover:bg-primary/90 transition-colors">{dictionary.pricing.free.button}</Button>
+                    </Link>
+                  ) : (
+                    <Link href={`/sign-in`}>
+                      <Button className="w-full group-hover:bg-primary/90 transition-colors">{dictionary.signIn}</Button>
+                    </Link>
+                  )}
                 </CardContent>
               </Card>
 
@@ -408,9 +424,15 @@ export default function LandingPageContent({ dictionary }: LandingPageContentPro
                       <span className="text-sm">{dictionary.pricing.pro.item5}</span>
                     </li>
                   </ul>
-                  <Link href={`/sign-up?plan=pro`}>
-                    <Button className="w-full group-hover:bg-primary/90 transition-colors">{dictionary.pricing.pro.button}</Button>
-                  </Link>
+                  {registrationEnabled !== false ? (
+                    <Link href={`/sign-up?plan=pro`}>
+                      <Button className="w-full group-hover:bg-primary/90 transition-colors">{dictionary.pricing.pro.button}</Button>
+                    </Link>
+                  ) : (
+                    <Link href={`/sign-in`}>
+                      <Button className="w-full group-hover:bg-primary/90 transition-colors">{dictionary.signIn}</Button>
+                    </Link>
+                  )}
                 </CardContent>
               </Card>
 
